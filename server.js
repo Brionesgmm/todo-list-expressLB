@@ -36,7 +36,7 @@ app.get('/',async (request, response)=>{
 })
 
 app.post('/addTodo', (request, response) => {
-    db.collection('todos').insertOne({thing: request.body.todoItem, completed: false})
+    db.collection('todos').insertOne({thing: request.body.todoItem, completed: false, deleted: false})
     .then(result => {
         console.log('Todo Added')
         response.redirect('/')
@@ -78,15 +78,49 @@ app.put('/markUnComplete', (request, response) => {
 
 })
 
-app.delete('/deleteItem', (request, response) => {
-    db.collection('todos').deleteOne({thing: request.body.itemFromJS})
+app.put('/markUnComplete', (request, response) => {
+    db.collection('todos').updateOne({thing: request.body.itemFromJS},{
+        $set: {
+            completed: false
+          }
+    },{
+        sort: {_id: -1},
+        upsert: false
+    })
     .then(result => {
-        console.log('Todo Deleted')
-        response.json('Todo Deleted')
+        console.log('Marked Complete')
+        response.json('Marked Complete')
     })
     .catch(error => console.error(error))
 
 })
+
+app.put('/deleteItem', (request, response) => {
+    db.collection('todos').updateOne({thing: request.body.itemFromJS},{
+        $set: {
+            deleted: true
+          }
+    },{
+        sort: {_id: -1},
+        upsert: false
+    })
+    .then(result => {
+        console.log('Marked Deleted')
+        response.json('Marked Deleted')
+    })
+    .catch(error => console.error(error))
+
+})
+
+// app.delete('/deleteItem', (request, response) => {
+//     db.collection('todos').deleteOne({thing: request.body.itemFromJS})
+//     .then(result => {
+//         console.log('Todo Deleted')
+//         response.json('Todo Deleted')
+//     })
+//     .catch(error => console.error(error))
+
+// })
 
 app.listen(process.env.PORT || PORT, ()=>{
     console.log(`Server running on port ${PORT}`)

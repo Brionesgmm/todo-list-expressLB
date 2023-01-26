@@ -15,12 +15,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Goals List</title>
 </head>
 <body>
-    <h1>Todo List: </h1>
+    <h1>Goals List: </h1>
     <ul class="todoItems">
     <% for(let i=0; i < items.length; i++) {%>
+        <% if(items[i].deleted === false){%>
         <li class="item">
             <% if(items[i].completed === true) {%>
                 <span class='completed'><%= items[i].thing %></span>
@@ -29,12 +30,13 @@
             <% } %>    
             <span class='fa fa-trash'></span>
         </li>
+        <% } %>
     <% } %>
     </ul>
 
     <h2>Left to do: <%= left %></h2>
 
-    <h2>Add A Todo:</h2>
+    <h2>Add A Goal:</h2>
 
     <form action="/addTodo" method="POST">
         <input type="text" placeholder="Thing To Do" name="todoItem">
